@@ -1,0 +1,66 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "lilypond build",
+            "type": "shell",
+            "command": "lilypond",
+            "args": [
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "${relativeFile}"
+            ]
+        },
+        {
+            "label": "lilypond-book build",
+            "type": "shell",
+            "command": "lilypond-book",
+            "args": [
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "--pdf",
+                "${relativeFile}"
+            ]
+        },
+        {
+            "label": "xelatex build",
+            "type": "shell",
+            "command": "xelatex",
+            "args": [
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "${fileBasenameNoExtension}.tex",
+            ],
+            "options": {
+                "cwd": "${fileDirname}/${fileBasenameNoExtension}"
+            }
+        },
+        {
+            "label": "PDF extract",
+            "type": "shell",
+            "command": "mv",
+            "args": [
+                "${fileDirname}/${fileBasenameNoExtension}/${fileBasenameNoExtension}.pdf",
+                "${fileDirname}/"
+            ]
+        },
+        {
+            "label": "clear",
+            "type": "shell",
+            "command": "rm -r ${fileDirname}/${fileBasenameNoExtension}"
+        },
+        {
+            "label": "lilypond-book mix build",
+            "type": "shell",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "lilypond-book build",
+                "xelatex build",
+                "PDF extract",
+                "clear"
+            ]
+        },
+    ]
+}
